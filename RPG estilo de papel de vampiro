@@ -1,0 +1,102 @@
+import random
+import time
+
+
+class Personagem:
+    def __init__(self, nome, vida, ataque):
+        self.nome = nome
+        self.vida = vida
+        self.ataque = ataque
+
+    def atacar(self):
+        return random.randint(1, self.ataque)
+
+
+class Jogador(Personagem):
+    def __init__(self, nome):
+        super().__init__(nome, vida=100, ataque=20)
+        self.inventario = []
+
+    def mostrar_status(self):
+        print(f"Nome: {self.nome}")
+        print(f"Vida: {self.vida}")
+        print(f"Ataque: {self.ataque}")
+        print(f"Inventário: {', '.join(self.inventario)}")
+
+    def explorar(self):
+        print("Você está explorando a cidade sombria...")
+        time.sleep(2)
+        evento = random.choice(["nada", "encontro", "enigma"])
+        if evento == "nada":
+            print("Você não encontrou nada de interessante.")
+        elif evento == "encontro":
+            inimigo = Personagem(nome="Vampiro", vida=50, ataque=15)
+            print(f"Você encontrou um vampiro! Prepare-se para o combate.")
+            self.combate(inimigo)
+        elif evento == "enigma":
+            print("Você encontrou um enigma misterioso.")
+            resposta_correta = random.choice(["lua cheia", "sangue", "escuridão"])
+            resposta = input("Responda ao enigma: ").lower()
+            if resposta == resposta_correta:
+                print("Você resolveu o enigma!")
+                self.inventario.append("amuleto")
+            else:
+                print("Resposta incorreta. Cuidado com as consequências.")
+
+    def combate(self, inimigo):
+        while self.vida > 0 and inimigo.vida > 0:
+            print(f"{self.nome} VS {inimigo.nome}")
+            print(f"{self.nome}: Vida = {self.vida}, Ataque = {self.ataque}")
+            print(f"{inimigo.nome}: Vida = {inimigo.vida}, Ataque = {inimigo.ataque}")
+            print("Escolha sua ação:")
+            print("1. Atacar")
+            print("2. Fugir")
+            escolha = input("Escolha: ")
+            if escolha == "1":
+                dano_jogador = self.atacar()
+                inimigo.vida -= dano_jogador
+                print(f"Você atacou o {inimigo.nome} e causou {dano_jogador} de dano.")
+            elif escolha == "2":
+                print("Você fugiu do combate.")
+                break
+
+            if inimigo.vida > 0:
+                dano_inimigo = inimigo.atacar()
+                self.vida -= dano_inimigo
+                print(f"O {inimigo.nome} atacou você e causou {dano_inimigo} de dano.")
+
+            time.sleep(2)
+
+        if self.vida <= 0:
+            print("Você foi derrotado. Fim de jogo.")
+            exit()
+        elif inimigo.vida <= 0:
+            print(f"Você derrotou o {inimigo.nome}. Continue sua jornada.")
+
+
+# Função principal do jogo
+def main():
+    print("Bem-vindo ao RPG de Vampiro!")
+    nome_jogador = input("Digite o nome do seu personagem: ")
+    jogador = Jogador(nome_jogador)
+
+    while True:
+        print("\nEscolha sua ação:")
+        print("1. Explorar a cidade sombria")
+        print("2. Mostrar status")
+        print("3. Sair do jogo")
+        escolha = input("Escolha: ")
+
+        if escolha == "1":
+            jogador.explorar()
+        elif escolha == "2":
+            jogador.mostrar_status()
+        elif escolha == "3":
+            print("Fim de jogo. Até mais!")
+            break
+        else:
+            print("Escolha inválida. Tente novamente.")
+
+
+if __name__ == "__main__":
+    main()
